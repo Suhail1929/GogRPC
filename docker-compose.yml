@@ -19,11 +19,15 @@ services:
       - ME_CONFIG_MONGODB_URL=mongodb://root:root@db:27017/
     depends_on:
       - db
-  services:
-    server:
-      build: .
-      ports:
-        - "50051:50051"
-    client:
-      build: .
-      command: ["./client", "Alice"]
+  server:
+    build: 
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "50051:50051"
+  client:
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "50052:50052"

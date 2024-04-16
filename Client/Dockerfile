@@ -8,7 +8,7 @@ WORKDIR /go/src/app
 COPY . .
 
 # Construire l'exécutable du serveur
-RUN go build -o server server.go
+RUN go build -o client client.go
 
 # Exposer le port 50051 sur le conteneur
 EXPOSE 50051
