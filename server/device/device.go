@@ -38,3 +38,10 @@ func (d Device) StoreToDatabase() error {
 
 	return nil
 }
+
+
+func countOperations() {
+	
+}
+
+

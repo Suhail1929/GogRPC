@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package = "Bakri-Souhail/GoGrpcClient";
+
+message StringRequest {
+  string message = 1;
+}
+
+message StringResponse {
+  string message = 1;
+}
+
+service StringService {
+  rpc SendString(StringRequest) returns (StringResponse);
+}
