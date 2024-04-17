@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	address = "localhost:50051"
+	address = "10.11.2.97:50051"
 )
 
 
