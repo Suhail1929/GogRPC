@@ -20,10 +20,3 @@ func ReadFiles(file *os.File) (Data, error) {
 
 	return Data{Json: string(jsonData)}, nil
 }
-
-// gRPC server address
-
-func (s Data) SendToServer() (string, error) {
-
-	return "json", nil
-}

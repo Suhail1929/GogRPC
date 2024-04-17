@@ -1,9 +1,10 @@
 package device
 
 import (
+	"Souhail-Bakri/Go-gRPC/operations"
 	"context"
 	"fmt"
-	"Souhail-Bakri/Go-gRPC/operations"
+
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -18,7 +19,7 @@ func (d Device) PrettyPrint() error {
 	return nil
 }
 
-func (d Device) InitializeDevice(device_name string,operations []operations.Operation) (Device, error){
+func (d Device) InitializeDevice(device_name string, operations []operations.Operation) (Device, error) {
 	d.device_name = device_name
 	d.operations = operations
 	return d, nil
@@ -29,7 +30,7 @@ func (d Device) StoreToDatabase() error {
 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:root@localhost:27017"))
 	coll := client.Database("CompanyInfos").Collection("device")
 	coll.InsertOne(context.Background(), d, nil)
-	
+
 	if err != nil {
 		return err
 	}
@@ -39,9 +40,6 @@ func (d Device) StoreToDatabase() error {
 	return nil
 }
 
-
 func countOperations() {
-	
+
 }
-
-
