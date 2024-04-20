@@ -12,42 +12,40 @@ import (
 )
 
 const (
-	address = "10.11.2.97:50051"
+	address = "localhost:50051"
 )
-
-
 
 func main() {
 	// Welcome()
 	ShowDevices()
 }
 
-// func Welcome() {
-// 	fmt.Println("Bienvenue dans le programme de gestion d'appareils des clients")
-// 	fmt.Println("Veuillez choisir une option:")
-// 	fmt.Println("1. Voir les données des appareils")
-// 	fmt.Println("2. Stocker les données des appareils dans la base de données")
-// 	fmt.Println("3. Quitter")
-// 	ChooseOption()
-// }
+func Welcome() {
+	fmt.Println("Bienvenue dans le programme de gestion d'appareils des clients")
+	fmt.Println("Veuillez choisir une option:")
+	fmt.Println("1. Voir les données des appareils")
+	fmt.Println("2. Stocker les données des appareils dans la base de données")
+	fmt.Println("3. Quitter")
+	ChooseOption()
+}
 
-// func ChooseOption() {
-// 	var option int
-// 	for {
-// 		fmt.Scanln(&option)
-// 		switch option {
-// 		case 1:
-// 			ShowDevices()
-// 		case 2:
-// 			// StoreDevices()
-// 		case 3:
-// 			fmt.Println("Merci d'avoir utilisé notre programme")
-// 			os.Exit(0)
-// 		default:
-// 			fmt.Println("Veuillez choisir une option valide")
-// 		}
-// 	}
-// }
+func ChooseOption() {
+	var option int
+	for {
+		fmt.Scanln(&option)
+		switch option {
+		case 1:
+			ShowDevices()
+		case 2:
+			// StoreDevices()
+		case 3:
+			fmt.Println("Merci d'avoir utilisé notre programme")
+			os.Exit(0)
+		default:
+			fmt.Println("Veuillez choisir une option valide")
+		}
+	}
+}
 
 func ChooseJournnee() string {
 	var journee string
@@ -64,14 +62,15 @@ func ChooseJournnee() string {
 }
 
 func OpenJsonFile() (*os.File, error) {
-	filePath := "data/journee_1.json"
+	Choice := ChooseJournnee()
+	filePath := "data/journee_" + Choice + ".json"
+	// filePath := "data/journee_1.json"
 	file, err := os.Open(filePath)
 	if err != nil {
 		return nil, err
 	}
 	return file, nil
 }
-
 
 func ShowDevices() {
 	file, err := OpenJsonFile()
@@ -91,8 +90,7 @@ func ShowDevices() {
 	SendToServer(fileData.Json)
 }
 
-
-func SendToServer( s string) {
+func SendToServer(s string) {
 	conn, err := grpc.Dial(address, grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Failed to dial: %v", err)
