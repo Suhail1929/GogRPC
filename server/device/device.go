@@ -3,9 +3,9 @@ package device
 import (
 	"context"
 	"fmt"
-
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"encoding/json"
 )
 
 type Device struct {
@@ -15,7 +15,7 @@ type Device struct {
 }
 
 func (d *Device) StoreToDatabase() error {
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:root@localhost:27017"))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:root@10.11.2.97:27017"))
 	if err != nil {
 		return fmt.Errorf("failed to connect to MongoDB: %v", err)
 	}
@@ -32,44 +32,40 @@ func (d *Device) StoreToDatabase() error {
 	return nil
 }
 
-// package device
+func (d *Device) CountOperations(jsonData string) (map[string]map[string]int, error) {
+	var devicesData []struct {
+		DeviceName string `json:"device_name"`
+		Operations []struct {
+			Type         string `json:"type"`
+			HasSucceeded bool   `json:"has_succeeded"`
+		} `json:"operations"`
+	}
 
-// import (
-// 	"Souhail-Bakri/Go-gRPC/operations"
-// 	"context"
-// 	"fmt"
+	if err := json.Unmarshal([]byte(jsonData), &devicesData); err != nil {
+		return nil, fmt.Errorf("erreur lors du décodage JSON : %w", err)
+	}
 
-// 	"go.mongodb.org/mongo-driver/mongo"
-// 	"go.mongodb.org/mongo-driver/mongo/options"
-// )
+	operationStats := make(map[string]map[string]int)
 
-// type Device struct {
-// 	device_name string                 `json: "device_name"`
-// 	operations  []operations.Operation `json: "operations"`
-// }
+	for _, devData := range devicesData {
+		deviceName := devData.DeviceName
+		totalOperations := len(devData.Operations)
+		failedOperations := 0
 
-// func (d Device) PrettyPrint() error {
-// 	fmt.Printf("Device %s has %d operations\n", d.device_name, len(d.operations))
-// 	return nil
-// }
+		for _, op := range devData.Operations {
+			if !op.HasSucceeded {
+				failedOperations++
+			}
+		}
 
-// func (d Device) InitializeDevice(device_name string, operations []operations.Operation) (Device, error) {
-// 	d.device_name = device_name
-// 	d.operations = operations
-// 	return d, nil
-// }
+		deviceStats := map[string]int{
+			"total_operations":  totalOperations,
+			"failed_operations": failedOperations,
+		}
 
-// func (d Device) StoreToDatabase() error {
+		operationStats[deviceName] = deviceStats
+	}
 
-// 	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:root@localhost:27017"))
-// 	coll := client.Database("CompanyInfos").Collection("device")
-// 	coll.InsertOne(context.Background(), d, nil)
+	return operationStats, nil
+}
 
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	fmt.Printf("Device %s stored in database\n", d.device_name)
-
-// 	return nil
-// }

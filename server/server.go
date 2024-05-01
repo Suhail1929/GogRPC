@@ -2,14 +2,13 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net"
 
-	"Bakri-Souhail/GoGrpcServer/device"
-	pb "Bakri-Souhail/GoGrpcServer/grpc"
-
+	"Bakri-Souhail/server/device"
+	pb "Bakri-Souhail/server/grpc"
+	
 	"google.golang.org/grpc"
 )
 
@@ -28,10 +27,13 @@ func main() {
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
+
 }
 
 func (s *server) SendString(ctx context.Context, req *pb.StringRequest) (*pb.StringResponse, error) {
-	operationStats, err := countOperations(req.GetMessage())
+	//pour pouvoir utiliser les méthodes de la structure Device
+	deviceInt := device.Device{}
+	operationStats, err := deviceInt.CountOperations(req.GetMessage())
 	if err != nil {
 		fmt.Println("Erreur lors du comptage des opérations :", err)
 		return nil, err
@@ -59,115 +61,4 @@ func (s *server) SendString(ctx context.Context, req *pb.StringRequest) (*pb.Str
 	return &pb.StringResponse{Message: "Server received: " + req.GetMessage()}, nil
 }
 
-func countOperations(jsonData string) (map[string]map[string]int, error) {
-	var devicesData []struct {
-		DeviceName string `json:"device_name"`
-		Operations []struct {
-			Type         string `json:"type"`
-			HasSucceeded bool   `json:"has_succeeded"`
-		} `json:"operations"`
-	}
 
-	if err := json.Unmarshal([]byte(jsonData), &devicesData); err != nil {
-		return nil, fmt.Errorf("erreur lors du décodage JSON : %w", err)
-	}
-
-	operationStats := make(map[string]map[string]int)
-
-	for _, devData := range devicesData {
-		deviceName := devData.DeviceName
-		totalOperations := len(devData.Operations)
-		failedOperations := 0
-
-		for _, op := range devData.Operations {
-			if !op.HasSucceeded {
-				failedOperations++
-			}
-		}
-
-		deviceStats := map[string]int{
-			"total_operations":  totalOperations,
-			"failed_operations": failedOperations,
-		}
-
-		operationStats[deviceName] = deviceStats
-	}
-
-	return operationStats, nil
-}
-
-// func countOperations(jsonData string) (map[string]map[string]int, error) {
-// 	// Décodez les données JSON dans une structure appropriée
-// 	var devices []device.Device
-// 	if err := json.Unmarshal([]byte(jsonData), &devices); err != nil {
-// 		return nil, fmt.Errorf("erreur lors du décodage JSON : %w", err)
-// 	}
-
-// 	// Créez une carte pour stocker les statistiques d'opérations pour chaque device
-// 	operationStats := make(map[string]map[string]int)
-
-// 	// Parcourez chaque device pour compter les opérations
-// 	for _, device := range devices {
-// 		totalOperations := len(device.Operations)
-// 		failedOperations := 0
-
-// 		// Parcourez les opérations pour compter le nombre d'opérations échouées
-// 		for _, op := range device.Operations {
-// 			if !op.Has_succeeded {
-// 				failedOperations++
-// 			}
-// 		}
-
-// 		// Stockez les statistiques d'opérations pour ce device
-// 		deviceStats := map[string]int{
-// 			"total_operations":  totalOperations,
-// 			"failed_operations": failedOperations,
-// 		}
-
-// 		operationStats[device.DeviceName] = deviceStats
-// 	}
-
-// 	return operationStats, nil
-// }
-
-// func countOperations(jsonData string) (map[string]map[string]int, error) {
-// 	var devices []device.Device
-// 	if err := json.Unmarshal([]byte(jsonData), &devices); err != nil {
-// 		return nil, fmt.Errorf("erreur lors du décodage JSON : %w", err)
-// 	}
-
-// 	operationStats := make(map[string]map[string]int)
-
-// 	// Parcourez chaque device pour compter les opérations
-// 	for _, device := range devices {
-// 		totalOperations := len(device.Operations)
-// 		failedOperations := 0
-
-// 		// Parcourez les opérations pour compter le nombre d'opérations échouées
-// 		for _, op := range device.Operations {
-// 			if !op.Has_succeeded {
-// 				failedOperations++
-// 			}
-// 		}
-
-// 		// Stockez les statistiques d'opérations pour ce device
-// 		deviceStats := map[string]int{
-// 			"total_operations":  totalOperations,
-// 			"failed_operations": failedOperations,
-// 		}
-
-// 		operationStats[device.DeviceName] = deviceStats
-// 	}
-
-// 	for _, device := range devices {
-// 		totalOperations := device.TotalOperations
-// 		failedOperations := device.FailedOperations
-
-// 		operationStats[device.DeviceName] = map[string]int{
-// 			"total_operations":  totalOperations,
-// 			"failed_operations": failedOperations,
-// 		}
-// 	}
-
-// 	return operationStats, nil
-// }

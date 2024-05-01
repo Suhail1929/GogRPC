@@ -15,3 +15,4 @@ EXPOSE 50051
 
 # Commande par défaut pour démarrer le serveur
 CMD ["./server"]
+
