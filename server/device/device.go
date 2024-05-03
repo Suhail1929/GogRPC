@@ -32,7 +32,7 @@ func (d *Device) StoreToDatabase() error {
 	return nil
 }
 
-func (d *Device) CountOperations(jsonData string) (map[string]map[string]int, error) {
+func CountOperations(jsonData string) (map[string]map[string]int, error) {
 	var devicesData []struct {
 		DeviceName string `json:"device_name"`
 		Operations []struct {

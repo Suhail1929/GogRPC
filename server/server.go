@@ -32,8 +32,7 @@ func main() {
 
 func (s *server) SendString(ctx context.Context, req *pb.StringRequest) (*pb.StringResponse, error) {
 	//pour pouvoir utiliser les méthodes de la structure Device
-	deviceInt := device.Device{}
-	operationStats, err := deviceInt.CountOperations(req.GetMessage())
+	operationStats, err := device.CountOperations(req.GetMessage())
 	if err != nil {
 		fmt.Println("Erreur lors du comptage des opérations :", err)
 		return nil, err

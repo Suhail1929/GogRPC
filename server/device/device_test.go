@@ -76,8 +76,7 @@ func Test_StoreToDatabase_CountOperations(t *testing.T) {
 	}
 
 	// Appel de la fonction countOperations avec le JSON de test
-	deviceInt := device.Device{}
-	result, err := deviceInt.CountOperations(jsonData)
+	result, err := device.CountOperations(jsonData)
 
 	// Vérification des résultats
 	assert.Nil(t, err, "erreur non attendue")
