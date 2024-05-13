@@ -1,10 +1,18 @@
 # GogRPC
+<<<<<<< HEAD
+=======
+Projet Go et gRPC
+>>>>>>> 8968994f119f5324e7717ef1da3807a649fd0f23
 
 <div id="top"></div>
 <!-- PROJECT LOGO -->
 
 <p align="left">
+<<<<<<< HEAD
   An integrated project for managing IoT devices, APIs, and statistical dashboards. This project focuses on efficiently handling QR code-based ticketing systems and other IoT functionalities. Explore advanced data analytics and visualizations through the provided dashboard for enhanced insights and management capabilities.
+=======
+  The project is to develop two programs in Go language, initiated to meet the needs of our company. The latter manages a fleet of devices deployed at various clients, these devices generating daily files in JSON format containing a summary of their operations. The objective of the project is to design a system composed of a client and a server, using gRPC as a communication protocol, in order to collect this data, transmit it to the server, store it in the MongoDB database, and perform necessary updates.
+>>>>>>> 8968994f119f5324e7717ef1da3807a649fd0f23
   <br />
   <br />
 </p>
